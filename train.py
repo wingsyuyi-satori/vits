@@ -3,6 +3,7 @@ import json
 import argparse
 import itertools
 import math
+import time
 import torch
 from torch import nn, optim
 from torch.nn import functional as F
@@ -201,7 +202,7 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
           epoch,
           100. * batch_idx / len(train_loader)))
         logger.info([x.item() for x in losses] + [global_step, lr])
-        
+        logger.info(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
         scalar_dict = {"loss/g/total": loss_gen_all, "loss/d/total": loss_disc_all, "learning_rate": lr, "grad_norm_d": grad_norm_d, "grad_norm_g": grad_norm_g}
         scalar_dict.update({"loss/g/fm": loss_fm, "loss/g/mel": loss_mel, "loss/g/dur": loss_dur, "loss/g/kl": loss_kl})
 
