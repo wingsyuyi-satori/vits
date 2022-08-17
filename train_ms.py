@@ -3,6 +3,8 @@ import json
 import argparse
 import itertools
 import math
+import time
+
 import torch
 from torch import nn, optim
 from torch.nn import functional as F
@@ -203,7 +205,7 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
           epoch,
           100. * batch_idx / len(train_loader)))
         logger.info([x.item() for x in losses] + [global_step, lr])
-        
+        logger.info(time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime()))
         scalar_dict = {"loss/g/total": loss_gen_all, "loss/d/total": loss_disc_all, "learning_rate": lr, "grad_norm_d": grad_norm_d, "grad_norm_g": grad_norm_g}
         scalar_dict.update({"loss/g/fm": loss_fm, "loss/g/mel": loss_mel, "loss/g/dur": loss_dur, "loss/g/kl": loss_kl})
 
@@ -224,8 +226,8 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
 
       if global_step % hps.train.eval_interval == 0:
         evaluate(hps, net_g, eval_loader, writer_eval)
-        utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "G_{}.pth".format(global_step)))
-        utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "D_{}.pth".format(global_step)))
+        utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch,"/content/drive/MyDrive/G_{}.pth".format(global_step))
+        utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch,"/content/drive/MyDrive/D_{}.pth".format(global_step))
     global_step += 1
   
   if rank == 0:
